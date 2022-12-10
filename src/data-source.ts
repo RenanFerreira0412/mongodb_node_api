@@ -1,6 +1,6 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import User from "./app/entity/User"
+import User from "./app/models/User"
 
 export const AppDataSource = new DataSource({
     type: "mongodb",

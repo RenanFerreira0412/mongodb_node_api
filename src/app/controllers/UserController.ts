@@ -1,6 +1,5 @@
-import assert from 'assert';
 import { Request, Response } from 'express';
-import User from "../entity/User";
+import User from "../models/User";
 
 class UserController {
 
@@ -9,54 +8,40 @@ class UserController {
         return res.json(data);
     }
 
-    async create(req: Request, res: Response) {
-        const { email, password, confirmPassword } = req.body;
+    // async create(req: Request, res: Response) {
+    //     const { email, password, confirmPassword } = req.body;
 
-        const userCredencial = await User.find({ email: email }).count();
+    //     const userCredencial = await User.find({ email: email }).count();
 
-        console.log('user email: ' + userCredencial)
+    //     console.log('user email: ' + userCredencial)
 
-        if (userCredencial != 0) {
-            return res.status(409).json({ message: "Esse email já esta sendo utilizado por outro usuário!" });//caso exista um registro, retorna 409 informando o conflito
-        }
+    //     if (userCredencial != 0) {
+    //         return res.status(409).json({ message: "Esse email já esta sendo utilizado por outro usuário!" });//caso exista um registro, retorna 409 informando o conflito
+    //     }
 
-        if (confirmPassword != password) {
-            return res.status(409).json({ message: "Informe a mesma senha!" });
-        }
+    //     if (confirmPassword != password) {
+    //         return res.status(409).json({ message: "Informe a mesma senha!" });
+    //     }
 
-        const data = await User.create(req.body);
-        return res.json(data);
+    //     const data = await User.create(req.body);
+    //     return res.json(data);
 
-    }
+    // }
 
     async update(req: Request, res: Response) {
-        const { name, email, city, state } = req.body;
+        const { name, city, state, _id } = req.body;
 
-        const userCredencial = await User.find({ email: email }).count();
-
-        //Se não existe algum usuário com este email
-        if (userCredencial == 0) {
-            return res.sendStatus(404);
-        }
-
-        const data = await User.updateOne({ email: email }, { $set: { name: name, city: city, state: state } }); //persiste (update) os dados no banco.
+        const data = await User.updateOne({ _id: _id }, { $set: { name: name, city: city, state: state } }); //persiste (update) os dados no banco.
 
         return res.json(data);
-
     }
 
     async delete(req: Request, res: Response) {
-        const { email } = req.body;
+        const { _id } = req.body;
 
-        const userCredencial = await User.find({ email: email }).count();
+        const data = await User.deleteOne({ _id: _id });
 
-        //Se não existe algum usuário com este email
-        if (userCredencial == 0) {
-            return res.sendStatus(404);
-        } else {
-            const data = await User.deleteOne({ email: email });
-            return res.json(data);
-        }
+        return res.json(data);
     }
 
 }
