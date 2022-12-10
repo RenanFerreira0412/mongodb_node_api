@@ -2,8 +2,13 @@ import { Router } from "express";
 import UserController from "./app/controllers/UserController";
 import SubjectController from "./app/controllers/SubjectController";
 import ActivityController from "./app/controllers/ActivityController";
+import AuthController from "./app/controllers/AuthController";
 
 const router = Router();
+
+//Criando rotas para /auth
+router.post("/login", AuthController.login);
+router.post("/register", AuthController.register);
 
 //Criando rotas para /user
 router.get("/user", UserController.list);
