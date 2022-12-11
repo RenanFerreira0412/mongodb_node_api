@@ -8,6 +8,9 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
+    <!--Arquivos de estilo-->
+    <link rel="stylesheet" href="../styles/main.css">
+
     <!--Vuelidate-->
     <script src="https://unpkg.com/vuelidate@0.7.4/dist/vuelidate.min.js"></script>
     <script src="https://unpkg.com/vuelidate@0.7.4/dist/validators.min.js"></script>
@@ -19,29 +22,74 @@
 <body>
     <div id="app">
         <!--Homepage-->
-        <div>
+        <div class="conteiner-homepage">
 
         </div>
 
         <!--Tela de autenticação-->
-        <div>
-            <div>
-                <div>
-                    <form>
-                        <h2>Olá, bem-vindo!</h2>
-                        <div>
-                            <label for="email">Email</label>
-                            <input type="text" id="email" placeholder="Informe seu email">
+        <div class="container-auth">
+            <div class="container-auth-form">
+                <form id="formulario">
+                    <h2 v-text="authPageText.title"></h2>
+                    <div class="form-group-row">
+                        <p v-text="authPageText.actionButton1"></p>
+                        <p class="actionButton" @click="setFormAction(!isLogin)" v-text="authPageText.actionButton2">
+                        </p>
+                    </div>
+                    <div class="form-auth" v-if="isLogin">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" placeholder="Informe seu email">
                         </div>
-                        <div>
-                            <label for="password">Senha</label>
-                            <input type="text" id="password" placeholder="Informe sua senha">
+                        <div class="form-group">
+                            <label for="loginPassword">Senha</label>
+                            <input type="password" id="loginPassword" placeholder="Informe sua senha">
+                        </div>
+                    </div>
+                    <div class="form-auth" v-else>
+                        <div class="form-group">
+                            <label for="registerName">Nome</label>
+                            <input type="text" id="registerName" placeholder="Informe o seu nome">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email</label>
+                            <input type="email" id="registerEmail" placeholder="Informe seu email">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerPassword">Senha</label>
+                            <input type="password" id="registerPassword" placeholder="Informe sua senha">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirmar senha</label>
+                            <input type="password" id="confirmPassword" placeholder="Informe a mesma senha">
+                        </div>
+                        <div class="form-group">
+                            <label for="state">Estado</label>
+                            <select id="state" v-model="localidade._myState"
+                                @input="event => updateState(event.target.value)">
+                                <option disabled value="">Escolha um estado</option>
+                                <option v-for="(item, index) in statesList">
+                                    {{ item.sigla }} 
+                                </option>
+                            </select>
                         </div>
 
-                        <button type="button">Entrar</button>
-                    </form>
-                </div>
+                        <div class="form-group">
+                            <label for="city">Cidade</label>
+                            <select id="city" v-model="localidade._myCity"
+                                @input="event => updateCity(event.target.value)">
+                                <option disabled value="">Escolha uma cidade</option>
+                                <option v-for="(item, index) in citiesList">
+                                    {{ item.nome }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" v-text="authPageText.toggleButton"></button>
+                </form>
             </div>
+
         </div>
     </div>
 
