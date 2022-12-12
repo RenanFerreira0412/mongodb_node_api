@@ -12,6 +12,7 @@ body,
 body {
     background-color: #16161A;
     font-family: Arial, Helvetica, sans-serif;
+    color: #fffffe;
 }
 
 .container-auth {
@@ -22,13 +23,14 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #fffffe;
+    color: #16161A;
 }
 
 .container-auth-form {
     width: 400px;
 }
 
-.form-group {
+.form-field {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -40,14 +42,15 @@ body {
     gap: 5px;
 }
 
-.form-group>input {
+.form-field>input {
     border: none;
-    height: 20px;
+    height: 40px;
     padding: 10px;
     background: #DBDCDE;
+    color: #16161A;
 }
 
-.form-group>select {
+.form-field>select {
     border: none;
     height: 40px;
     padding: 10px;

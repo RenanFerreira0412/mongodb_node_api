@@ -8,8 +8,13 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.1.8/vue.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
+    <!--Bootstrap’s CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
     <!--Arquivos de estilo-->
     <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/error.css">
 
     <!--Vuelidate-->
     <script src="https://unpkg.com/vuelidate@0.7.4/dist/vuelidate.min.js"></script>
@@ -22,12 +27,50 @@
 <body>
     <div id="app">
         <!--Homepage-->
-        <div class="conteiner-homepage">
-
+        <div class="conteiner-homepage" v-if="isAuthenticated">
+            <div>
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home"
+                            aria-selected="true">Página Inicial</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-activity-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-activity" type="button" role="tab" aria-controls="pills-activity"
+                            aria-selected="false">Nova Atividade</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-myActivity-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-myActivity" type="button" role="tab" aria-controls="pills-myActivity"
+                            aria-selected="false">Minhas atividades</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-myProfile-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-myProfile" type="button" role="tab" aria-controls="pills-myProfile"
+                            aria-selected="false">Meu Perfil</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill"
+                            data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact"
+                            aria-selected="false" @click="logout">Sair</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="pills-home" role="tabpanel"
+                        aria-labelledby="pills-home-tab" tabindex="0">Página inicial</div>
+                    <div class="tab-pane fade" id="pills-activity" role="tabpanel" aria-labelledby="pills-activity-tab"
+                        tabindex="0">Nova atividade</div>
+                    <div class="tab-pane fade" id="pills-myActivity" role="tabpanel"
+                        aria-labelledby="pills-myActivity-tab" tabindex="0">Minhas atividades</div>
+                    <div class="tab-pane fade" id="pills-myProfile" role="tabpanel"
+                        aria-labelledby="pills-myProfile-tab" tabindex="0">Meu perfil</div>
+                </div>
+            </div>
         </div>
 
         <!--Tela de autenticação-->
-        <div class="container-auth">
+        <div class="container-auth" v-else>
             <div class="container-auth-form">
                 <form id="formulario">
                     <h2 v-text="authPageText.title"></h2>
@@ -37,56 +80,75 @@
                         </p>
                     </div>
                     <div class="form-auth" v-if="isLogin">
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="loginEmail">Email</label>
-                            <input type="email" id="loginEmail" placeholder="Informe seu email">
+                            <input type="email" id="loginEmail" :class="status($v.login.email)"
+                                placeholder="Informe seu email" v-model.trim="$v.login.email.$model">
+                            <span class="error" v-if="!$v.login.email.required">Campo obrigatório!</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="loginPassword">Senha</label>
-                            <input type="password" id="loginPassword" placeholder="Informe sua senha">
+                            <input type="password" id="loginPassword" :class="status($v.login.password)"
+                                placeholder="Informe sua senha" v-model.trim="$v.login.password.$model">
+                            <span class="error" v-if="!$v.login.password.required">Campo obrigatório!</span>
                         </div>
                     </div>
                     <div class="form-auth" v-else>
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="registerName">Nome</label>
-                            <input type="text" id="registerName" placeholder="Informe o seu nome">
+                            <input type="text" id="registerName" placeholder="Informe o seu nome"
+                                v-model.trim="$v.register.name.$model" :class="status($v.register.name)">
+                            <span class="error" v-if="!$v.register.name.required">Campo obrigatório!</span>
+                            <span class="error" v-if="!$v.register.name.minLength">Seu nome precisa ser maior que {{
+                                $v.register.name.$params.minLength.min }} caracteres.</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="registerEmail">Email</label>
-                            <input type="email" id="registerEmail" placeholder="Informe seu email">
+                            <input type="email" id="registerEmail" :class="status($v.register.email)"
+                                placeholder="Informe seu email" v-model.trim="$v.register.email.$model">
+                            <span class="error" v-if="!$v.register.email.required">Campo obrigatório!</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="registerPassword">Senha</label>
-                            <input type="password" id="registerPassword" placeholder="Informe sua senha">
+                            <input type="password" id="registerPassword" :class="status($v.register.password)"
+                                placeholder="Informe sua senha" v-model.trim="$v.register.password.$model">
+                            <span class="error" v-if="!$v.register.password.required">Campo obrigatório!</span>
+                            <span class="error" v-if="!$v.register.password.minLength">No mínimo {{
+                                $v.register.password.$params.minLength.min }} caracteres.</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="confirmPassword">Confirmar senha</label>
-                            <input type="password" id="confirmPassword" placeholder="Informe a mesma senha">
+                            <input type="password" id="confirmPassword" :class="status($v.register.confirmPassword)"
+                                placeholder="Informe a mesma senha" v-model.trim="$v.register.confirmPassword.$model">
+                            <span class="error" v-if="!$v.register.confirmPassword.sameAsPassword">Informe a mesma
+                                senha.</span>
                         </div>
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="state">Estado</label>
-                            <select id="state" v-model="localidade._myState"
-                                @input="event => updateState(event.target.value)">
+                            <select id="state" v-model.trim="$v.register.state.$model"
+                                :class="status($v.register.state)" @input="event => updateState(event.target.value)">
                                 <option disabled value="">Escolha um estado</option>
-                                <option v-for="(item, index) in statesList">
-                                    {{ item.sigla }} 
+                                <option v-for="item in statesList" v-bind:value="item.sigla">
+                                    {{ item.nome }}
                                 </option>
                             </select>
+                            <span class="error" v-if="!$v.register.state.required">Campo obrigatório!</span>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-field">
                             <label for="city">Cidade</label>
-                            <select id="city" v-model="localidade._myCity"
+                            <select id="city" v-model.trim="$v.register.city.$model" :class="status($v.register.city)"
                                 @input="event => updateCity(event.target.value)">
                                 <option disabled value="">Escolha uma cidade</option>
                                 <option v-for="(item, index) in citiesList">
                                     {{ item.nome }}
                                 </option>
                             </select>
+                            <span class="error" v-if="!$v.register.city.required">Campo obrigatório!</span>
                         </div>
                     </div>
 
-                    <button type="button" v-text="authPageText.toggleButton"></button>
+                    <button type="button" @click="authButton($v)" v-text="authPageText.toggleButton"></button>
                 </form>
             </div>
 
@@ -94,6 +156,9 @@
     </div>
 
     <script type="text/javascript" src="../JS/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

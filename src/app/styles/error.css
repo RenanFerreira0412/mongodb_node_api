@@ -1,0 +1,17 @@
+.dirty {
+    border-color: #5A5;
+    background: #EFE;
+}
+
+.dirty:focus {
+    outline-color: #8E8;
+}
+
+.error {
+    color: #ff6961;
+    font-size: 13px;
+}
+
+.error:focus {
+    outline-color: #ff6961;
+}
